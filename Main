@@ -1,0 +1,107 @@
+package NewDoc;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class Main {
+    public static void main(String[] args) {
+
+        JFrame myJframe = new JFrame("TextReader");
+        myJframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myJframe.setSize(400, 300);
+
+        Container container = myJframe.getContentPane();
+
+        JPanel jPanel1 = new JPanel();
+        jPanel1.setLayout(new GridLayout(2,1));
+        container.add(jPanel1, BorderLayout.CENTER);
+
+        JTextArea text1 = new JTextArea("Write keys here!");
+        Border border = BorderFactory.createLineBorder(Color.BLACK);
+        text1.setBorder(border);
+        JTextArea text2 = new JTextArea("Insert text here!");
+
+        jPanel1.add(text1);
+        jPanel1.add(text2);
+
+        JPanel jPanel2 = new JPanel();
+        jPanel2.setLayout(new GridLayout(1,2));
+        container.add(jPanel2, BorderLayout.SOUTH);
+
+        JButton bytReset = new JButton("Reset");
+        JButton butSturt = new JButton("Start");
+        jPanel2.add(bytReset);
+        jPanel2.add(butSturt);
+
+        // ------------------------------------------------------------------------
+        ActionListener btnLisReset = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                text1.setText("");
+                text2.setText("");
+            }
+        };
+
+        ActionListener btnLisStart = new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e)  {
+                try {
+                    FileWriter fw = new FileWriter("C:\\Users\\user\\IdeaProjects\\someinfo.txt");
+                    fw.write( text1.getText() );
+                    fw.close();
+
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+                String[] line;
+                String delimeter = "\n";
+                line = text1.getText().split(delimeter);
+                //System.out.println(line.length);
+
+                for (int i = 0 ; i<line.length ; i++){
+                    System.out.println(line[i]);
+                    String tempWord = line[i];
+                    if (tempWord.indexOf(' ') != -1){ line[i] = tempWord.substring(0, tempWord.length()-1);
+                    }
+                }
+
+                String str = text2.getText();
+
+                int tempParam = 0;
+                for (int i = 0 ; i<line.length ; i++) {
+                    System.out.println(line[i]);
+
+                    String tempWirhPoint = line[i]+"." ;
+                    String tempWithChar = line[i]+"," ;
+
+                    if (str.indexOf(line[i]) != -1 || str.indexOf(tempWirhPoint) != -1 || str.indexOf(tempWithChar) != -1) {
+                        String []splitArray = text2.getText().split(line[i]);
+                        tempParam = splitArray.length - 1;
+                    }
+                    line[i] = line[i] + " ("+tempParam+")";
+                    tempParam = 0;
+
+                }
+
+                String forPrint = "" ;
+                for (int i = 0 ; i<line.length ; i++){
+                    System.out.println(line[i]);
+                    forPrint = forPrint + line[i]+" \n";
+                }
+                text1.setText(forPrint);
+            }
+        };
+
+        // -----  ----------  ----------  ----------  -------- -----------  ---------- --------
+        bytReset.addActionListener(btnLisReset);
+        butSturt.addActionListener(btnLisStart);
+
+        myJframe.setVisible(true);
+    }
+}
